@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AETHER•GRID 
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@200;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+           
+            --gold-metallic: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            --gold-solid: #c5a059;
+            --gold-deep: #8a6d3b;
+            --gold-neon: 0 0 20px rgba(191, 149, 63, 0.4), 0 0 40px rgba(251, 245, 183, 0.2);
+            --bg-white: #f8f8f8;
+            --panel-white: #ffffff;
+            --rich-black: #1a1a1a;
+        }
+
+        * { box-sizing: border-box; cursor: crosshair; }
+
+        body {
+            margin: 0;
+            background: var(--bg-white);
+            color: var(--rich-black);
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            perspective: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .celestial-bg {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, #ffffff 0%, #e0e0e0 100%);
+            z-index: -1;
+        }
+
+        .celestial-bg::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b38728' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 320px 1fr 320px;
+            grid-template-rows: 100px 1fr 160px;
+            width: 94vw;
+            height: 90vh;
+            gap: 25px;
+            transform-style: preserve-3d;
+        }
+
+       
+        .panel {
+            background: var(--panel-white);
+            border: 3px solid;
+            border-image: var(--gold-metallic) 1;
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+
+        .panel:hover {
+            transform: translateZ(80px);
+            box-shadow: 0 40px 80px rgba(138, 109, 59, 0.2), var(--gold-neon);
+            z-index: 10;
+        }
+
+        
+        header {
+            grid-column: 1 / 4;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            background: var(--rich-black); 
+            border-bottom: 4px solid;
+            border-image: var(--gold-metallic) 1;
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            letter-spacing: 10px;
+            font-size: 1.8rem;
+            background: var(--gold-metallic);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header .header-info {
+            color: white;
+            text-align: right;
+            font-family: 'Montserrat';
+        }
+
+        
+        .node-list { padding: 30px; overflow-y: auto; }
+       
+        .node-card {
+            padding: 18px;
+            margin-bottom: 15px;
+            border-left: 4px solid transparent;
+            background: #f4f4f4;
+            transition: 0.3s;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #555;
+        }
+
+        .node-card:hover, .node-card.active {
+            background: white;
+            color: var(--rich-black);
+            border-left: 4px solid var(--gold-solid);
+            box-shadow: 10px 0 20px rgba(179, 135, 40, 0.1);
+            transform: translateX(10px);
+        }
+
+       
+        .hub {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .temp-display {
+            font-family: 'Cinzel', serif;
+            font-size: 10rem;
+            font-weight: 900;
+            color: var(--rich-black);
+            position: relative;
+        }
+
+        .temp-display::after {
+            content: '°';
+            position: absolute;
+            color: var(--gold-solid);
+            right: -50px;
+            top: 10px;
+        }
+
+        .city-title-main {
+            font-family: 'Cinzel';
+            font-size: 2.2rem;
+            letter-spacing: 15px;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px solid;
+            border-image: var(--gold-metallic) 1;
+        }
+
+        
+        .data-matrix {
+            grid-column: 1 / 4;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            align-items: center;
+        }
+
+        .data-item {
+            text-align: center;
+            border-right: 1px solid rgba(179, 135, 40, 0.2);
+        }
+
+        .data-item:last-child { border-right: none; }
+
+        .label {
+            font-size: 0.7rem;
+            color: var(--gold-deep);
+            letter-spacing: 3px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+       
+        .val { font-size: 1.8rem; font-weight: 200; color: var(--rich-black); }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--gold-solid); }
+    </style>
+</head>
+<body>
+
+    <div class="celestial-bg"></div>
+
+    <div class="main-container" id="matrix">
+        <header class="panel">
+            <div class="logo">AETHER•GOLD</div>
+            <div class="header-info">
+                <div id="clock" style="font-size: 1.4rem; letter-spacing: 5px; font-weight: 200;">00:00:00</div>
+                <div style="font-size: 0.6rem; font-weight: 700; letter-spacing: 2px; color: var(--gold-solid);">SYSTEM_STATUS: DIVINE</div>
+            </div>
+        </header>
+
+        <div class="panel node-list" id="cityContainer"></div>
+
+        <div class="panel hub">
+            <div class="label">Atmospheric Weight</div>
+            <div class="temp-display" id="mainTemp">--</div>
+            <div id="mainCity" class="city-title-main">SCANNING</div>
+        </div>
+
+        <div class="panel node-list" id="forecastList">
+            <div class="label" style="margin-bottom: 25px;">Temporal Projections</div>
+        </div>
+
+        <div class="panel data-matrix">
+            <div class="data-item">
+                <div class="label">Sensory</div>
+                <div class="val" id="v1">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Drift</div>
+                <div class="val" id="v2">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Pressure</div>
+                <div class="val" id="v3">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Radiance</div>
+                <div class="val" id="v4">--</div>
+            </div>
+            <div class="data-item">
+                <div class="label">Mist</div>
+                <div class="val" id="v5">--</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CITIES = [
+            { name: "Mumbai", lat: 19.07, lon: 72.87 },
+            { name: "Nagpur", lat: 21.14, lon: 79.08 },
+            { name: "Paris", lat: 48.85, lon: 2.35 },
+            { name: "Tokyo", lat: 35.67, lon: 139.65 },
+            { name: "Sydney", lat: -33.86, lon: 151.20 }
+        ];
+
+        const matrix = document.getElementById('matrix');
+        window.addEventListener('mousemove', (e) => {
+            let x = (window.innerWidth / 2 - e.pageX) / 80;
+            let y = (window.innerHeight / 2 - e.pageY) / 80;
+            matrix.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+        });
+
+        async function fetchWeather(city) {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,pressure_msl,wind_speed_10m&daily=temperature_2m_max,uv_index_max&timezone=auto`;
+           
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+               
+                document.getElementById('mainTemp').innerText = Math.round(data.current.temperature_2m);
+                document.getElementById('mainCity').innerText = city.name.toUpperCase();
+
+                document.getElementById('v1').innerText = `${Math.round(data.current.apparent_temperature)}°`;
+                document.getElementById('v2').innerText = `${data.current.wind_speed_10m} km/h`;
+                document.getElementById('v3').innerText = `${Math.round(data.current.pressure_msl)}`;
+                document.getElementById('v4').innerText = `${data.daily.uv_index_max[0]} UV`;
+                document.getElementById('v5').innerText = `${data.current.relative_humidity_2m}%`;
+
+                const fList = document.getElementById('forecastList');
+                fList.innerHTML = `<div class="label" style="margin-bottom: 25px;">Temporal Projections</div>`;
+                data.daily.temperature_2m_max.slice(1, 6).forEach((temp, i) => {
+                    fList.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; margin-bottom:18px; font-weight:700; font-size:1rem;">
+                            <span style="color:var(--gold-deep)">DAY 0${i+1}</span>
+                            <span>${temp}°C</span>
+                        </div>
+                    `;
+                });
+            } catch(e) { console.error("SIGNAL LOST"); }
+        }
+
+        const container = document.getElementById('cityContainer');
+        CITIES.forEach((city, i) => {
+            const card = document.createElement('div');
+            card.className = `node-card ${i === 4 ? 'active' : ''}`; // Default to Sydney
+            card.innerHTML = city.name.toUpperCase();
+            card.onclick = () => {
+                document.querySelectorAll('.node-card').forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                fetchWeather(city);
+            };
+            container.appendChild(card);
+        });
+
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-GB');
+        }, 1000);
+
+        fetchWeather(CITIES[4]); // Start with Sydney
+    </script>
+</body>
+</html>
